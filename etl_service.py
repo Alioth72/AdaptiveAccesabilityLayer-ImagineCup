@@ -27,7 +27,7 @@ class ETLPipeline:
         self.gemini = genai.GenerativeModel("gemini-2.0-flash")
         os.makedirs(self.page_image_dir, exist_ok=True)
         os.makedirs(self.parsed_sections_dir, exist_ok=True)
-        os.environ["GOOGLE_API_KEY"] = "AIzaSyDNWii5DoKOjnBdci9BOc-92pb0HtyyDpM"
+        os.environ["GOOGLE_API_KEY"] = ""
         genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
     def _render_pdf_to_all_images(self, pdf_path: str, base_filename: str, dpi: int) -> List[str]:
