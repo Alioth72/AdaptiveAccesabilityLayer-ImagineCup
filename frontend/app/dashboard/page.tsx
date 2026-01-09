@@ -27,6 +27,7 @@ import LearningDisabilityEngine from "@/components/LearningDisabilityEngine";
 import { RecentTopicsCard } from "@/components/dashboard/RecentTopicsCard";
 import AccessibilityToolbar from "@/components/learning/AccessibilityToolbar";
 import { AccessibilitySettings } from "@/components/learning/AccessibilityToolbar";
+import VisualDisability from "@/components/VisualDisability";
 
 const topItems = [
     { name: "Home", icon: Home },
@@ -173,7 +174,7 @@ export default function DashboardPage() {
                 {active === "Home" && <HomeDashboard />}
 
                 {active === "Learning Disability" && <LearningDisabilityEngine />}
-                {active === "Visual Impairment" && <div>Visual Impairment Page Coming Soon</div>}
+                {active === "Visual Impairment" && <VisualDisability />}
                 {active === "Hearing Impairment" && <div>Hearing Impairment Page Coming Soon</div>}
                 {active === "Profile" && <div>Profile Page Coming Soon</div>}
 
