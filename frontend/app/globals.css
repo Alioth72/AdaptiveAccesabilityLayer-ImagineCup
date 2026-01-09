@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primary: #8b5cf6;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #8b5cf6;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bionic span {
+  font-weight: 700;
+}
+
+/* DARK MODE */
+.dark-mode {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+.dark-mode * {
+  background-color: transparent !important;
+  color: inherit;
+}
+
+/* HIGH CONTRAST */
+.high-contrast {
+  background-color: black;
+  color: yellow;
+}
+
+.high-contrast a,
+.high-contrast button {
+  color: yellow !important;
+  border-color: yellow !important;
+}
+
+body[data-color-blind="protanopia"] {
+  filter: url("#protanopia");
+}
+
+body[data-color-blind="deuteranopia"] {
+  filter: url("#deuteranopia");
+}
+
+body[data-color-blind="tritanopia"] {
+  filter: url("#tritanopia");
+}
+
+body[data-color-blind="achromatopsia"] {
+  filter: grayscale(100%);
+}
