@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect, useRef } from "react";
 import React, { useState } from "react";
 
 export default function VisualDisability() {
@@ -7,6 +7,7 @@ export default function VisualDisability() {
   const [result, setResult] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 🔊 NEW (already present, just used now)
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -43,31 +44,42 @@ export default function VisualDisability() {
   };
 
   // 🔊 NEW: call backend TTS
-  const handleReadAloud = async () => {
-    if (!result) return;
+    const handleReadAloud = async () => {
+      if (!result) return;
 
-    setIsSpeaking(true);
+      setIsSpeaking(true);
 
-    try {
-      const res = await fetch(
-        "http://127.0.0.1:8000/visual-disability/tts",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pages: result.pages }),
-        }
-      );
+      try {
+        const res = await fetch(
+          "http://127.0.0.1:8000/visual-disability/tts",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pages: result.pages }),
+          }
+        );
 
-      const data = await res.json();
+        const data = await res.json();
 
-      // backend returns relative path like out/visual/audio/xyz.wav
-      setAudioUrl(`http://127.0.0.1:8000/${data.audio_path}`);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSpeaking(false);
-    }
+        // backend returns relative path like out/visual/audio/xyz.wav
+        setAudioUrl(`http://127.0.0.1:8000/${data.audio_path}`);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsSpeaking(false);
+      }
+    };
+
+    const handleStopAudio = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.pause();
+    audio.currentTime = 0; // reset to start
   };
+
+             
+
 
   return (
     <div className="p-6 space-y-6">
@@ -91,14 +103,24 @@ export default function VisualDisability() {
 
         {/* 🔊 NEW BUTTON */}
         {result && (
-          <button
-            onClick={handleReadAloud}
-            disabled={isSpeaking}
-            className="px-4 py-2 bg-purple-600 text-white rounded"
-          >
-            {isSpeaking ? "Generating Audio..." : "🔊 Read Aloud"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleReadAloud}
+              disabled={isSpeaking}
+              className="px-4 py-2 bg-purple-600 text-white rounded"
+            >
+              {isSpeaking ? "Generating Audio..." : "🔊 Read Aloud"}
+            </button>
+
+            <button
+              onClick={handleStopAudio}
+              className="px-4 py-2 bg-red-600 text-white rounded"
+            >
+              ⏹ Stop
+            </button>
+          </div>
         )}
+
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
@@ -134,12 +156,16 @@ export default function VisualDisability() {
           {/* 🔊 AUDIO PLAYER */}
           {audioUrl && (
             <audio
-              controls
-              autoPlay
-              className="w-full mt-4"
+              ref={audioRef}     // ✅ THIS LINE FIXES STOP
               src={audioUrl}
+              autoPlay
+              controls
+              className="w-full"
             />
           )}
+
+
+
         </div>
       )}
     </div>

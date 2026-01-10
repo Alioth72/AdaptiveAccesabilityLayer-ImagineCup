@@ -1,41 +1,25 @@
 import os
 import uuid
-import torch
-import torchaudio as ta
-from chatterbox.tts import ChatterboxTTS
-
-# ------------------------
-# Load model ONCE (IMPORTANT)
-# ------------------------
-
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
-print(f"🔊 Loading ChatterboxTTS on {DEVICE}...")
-
-tts_model = ChatterboxTTS.from_pretrained(device=DEVICE)
-
-print("✅ TTS model loaded")
+import pyttsx3
 
 AUDIO_DIR = "out/visual/audio"
 os.makedirs(AUDIO_DIR, exist_ok=True)
 
+# Initialize engine ONCE
+engine = pyttsx3.init()
+
+# Optional: slow speech for accessibility
+engine.setProperty("rate", 150)   # default ~200
+engine.setProperty("volume", 1.0)
 
 def generate_tts_audio(text: str) -> str:
-    """
-    Generates speech audio from text.
-    Returns relative path to WAV file.
-    """
-
     if not text.strip():
-        raise ValueError("Empty text passed to TTS")
-
-    # Generate waveform
-    wav = tts_model.generate(text)
+        raise ValueError("Empty text for TTS")
 
     filename = f"{uuid.uuid4().hex}.wav"
     output_path = os.path.join(AUDIO_DIR, filename)
 
-    # Save audio
-    ta.save(output_path, wav.cpu(), tts_model.sr)
+    engine.save_to_file(text, output_path)
+    engine.runAndWait()
 
     return output_path
